@@ -4,16 +4,20 @@ struct DashboardView: View {
     @State private var showFilter = false
     @State private var showStored = false
     @State private var showBorrowed = false
-
+    @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack(spacing: 0) {
             // Top Bar
             HStack {
                 Spacer()
-                Text("Dashboard")
-                    .font(.title)
-                    .bold()
-                    .padding(.leading, 24)
+                HStack{
+                    if colorScheme == .dark {
+                        Image("logodark").resizable().frame(width: 250,height: 100)
+                    } else {
+                        Image("logonormal").resizable().frame(width: 250,height: 100)
+                }
+                }
+                
                 Spacer()
 //                Button(action: {
 //                    showFilter = true
@@ -26,7 +30,6 @@ struct DashboardView: View {
             }
             .padding(.horizontal)
             .padding(.top, 10)
-            .background(Color(.systemGray6))
             
             // Cards
             HStack(spacing: 16) {
@@ -57,6 +60,7 @@ struct DashboardView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:30 AM", tagID: "1234567890")
+                    // na integracao vamos enviar o estado .returned ou .picked
                     ActivityItem(type: .picked, title: "Mochila emprestada", time: "10:25 AM", tagID: "9876543210")
                     ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:20 AM", tagID: "4567890123")
                     ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:15 AM", tagID: "7890123456")
@@ -68,38 +72,47 @@ struct DashboardView: View {
             // Bottom Navigation
             Divider()
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
-        .sheet(isPresented: $showStored) {
+        .fullScreenCover(isPresented: $showStored) {
             BackpackListView(title: "Mochilas guardadas", backpacks: mockStored)
+            
         }
-        .sheet(isPresented: $showBorrowed) {
+        .fullScreenCover(isPresented: $showBorrowed) {
             BackpackListView(title: "Mochilas emprestadas", backpacks: mockBorrowed)
         }
     }
 }
 
 struct BackpackListView: View {
+    @Environment(\.dismiss) var dismiss
     let title: String
     let backpacks: [Backpack]
 
     var body: some View {
         NavigationView {
-            List(backpacks) { bag in
-                HStack {
-                    Image(systemName: "backpack.fill")
-                        .foregroundColor(.black)
-                        .frame(width: 32, height: 32)
-                    VStack(alignment: .leading) {
-                        Text(bag.name)
-                            .fontWeight(.medium)
-                        Text("Tag ID: \(bag.tagID)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                List(backpacks) { bag in
+                    HStack {
+                        Image(systemName: "backpack.fill")
+                            .foregroundColor(Color("TextColor"))
+                            .frame(width: 32, height: 32)
+                        VStack(alignment: .leading) {
+                            Text(bag.name)
+                                .fontWeight(.medium)
+                            Text("Tag ID: \(bag.tagID)")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+                .navigationTitle(title)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Fechar") {
+                            dismiss()
+                        }
+                        .foregroundColor(Color("TextColor")) // ou .white
                     }
                 }
-                .padding(.vertical, 4)
-            }
-            .navigationTitle(title)
         }
     }
 }
@@ -134,15 +147,15 @@ struct StatCard: View {
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundColor(.black)
+                .foregroundColor(Color(.black))
             Text(value)
                 .font(.title)
                 .fontWeight(.bold)
-                .foregroundColor(.black)
+                .foregroundColor(Color(.black))
         }
         .padding()
         .frame(minWidth: 158)
-        .background(Color(UIColor.systemGray4))
+        .background(Color("ButtonColor"))
         .cornerRadius(12)
     }
 }
@@ -166,8 +179,8 @@ enum ActivityIconType {
         switch self {
         case .check: return .green
         case .xmark: return .red
-        case .returned: return .black
-        case .picked: return .black
+        case .returned: return .blue
+        case .picked: return .orange
         }
     }
 }
@@ -177,21 +190,20 @@ struct ActivityItem: View {
     let title: String
     let time: String
     let tagID: String
-
     var body: some View {
         HStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(Color(UIColor.systemGray4))
+                    .fill(type.color).opacity(0.3)
                     .frame(width: 48, height: 48)
                 Image(systemName: type.systemName)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextColor"))
             }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextColor"))
                 Text(time)
                     .font(.caption)
                     .foregroundColor(.gray)
@@ -203,8 +215,13 @@ struct ActivityItem: View {
             Spacer()
         }
         .padding()
-        .background(Color.white)
+        .background(Color("MenuBar"))
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(type.color, lineWidth: 3)
+        )
         .cornerRadius(10)
+        
     }
 }
 

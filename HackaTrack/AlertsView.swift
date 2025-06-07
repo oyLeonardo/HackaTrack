@@ -31,7 +31,7 @@ struct AlertsView: View {
                     print("ViewAlerts")
                 }) {
                     Image(systemName: "line.3.horizontal.decrease.circle")
-                        .foregroundColor(.black)
+                        .foregroundColor(Color("TextColor"))
                         .frame(width: 24, height: 24)
                 }
                 .frame(width: 48, height: 48)
@@ -88,13 +88,13 @@ struct AlertListItem: View {
                     .fill(Color(UIColor.systemGray4))
                     .frame(width: 48, height: 48)
                 Image(systemName: "bell")
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextColor"))
             }
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(alert.title)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextColor"))
                 Text(alert.time)
                     .font(.caption)
                     .foregroundColor(.gray)
@@ -103,7 +103,7 @@ struct AlertListItem: View {
             Spacer()
         }
         .padding()
-        .background(Color.white)
+        .background(Color.menuBar)
         .cornerRadius(10)
     }
 }

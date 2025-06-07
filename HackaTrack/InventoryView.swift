@@ -13,14 +13,17 @@ struct InventoryView: View {
     @State private var search = ""
 
     @State private var items: [InventoryItem] = (1...20).map { i in
-        .init(name: "Mochila \(i)", status: "Guardada", icon: "backpack")
+        .init(name: "Mochila \(i)", status: "Emprestada", icon: "backpack")
     }
+    
+    @State private var colorlol = ""
     
     var filteredItems: [InventoryItem] {
         items.filter { search.isEmpty || $0.name.localizedCaseInsensitiveContains(search) }
     }
 
     var body: some View {
+        
         VStack(spacing: 0) {
             // Top Bar
             HStack {
@@ -34,14 +37,13 @@ struct InventoryView: View {
                     showRegisterItem = true
                 }) {
                     Image(systemName: "plus")
-                        .foregroundColor(.black)
+                        .foregroundColor(Color("TextColor"))
                         .frame(width: 24, height: 24)
                 }
                 .frame(width: 48, height: 48)
             }
             .padding(.horizontal)
             .padding(.vertical, 12)
-            .background(Color(.systemGray6))
 
             // Search Field
             HStack {
@@ -73,15 +75,17 @@ struct InventoryView: View {
             }
 
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
-        .sheet(isPresented: $showRegisterItem) {
+        .background(Color("BackgroundColor").ignoresSafeArea())
+        .fullScreenCover(isPresented: $showRegisterItem) {
+            
             RegisterItemView { newItem in
                 items.append(newItem)
                 showRegisterItem = false
             }
         }
-        .sheet(item: $selectedItem) { item in
+        .fullScreenCover(item: $selectedItem) { item in
             NavigationView {
+                
                 DetailItemView(currentItem: item)
             }
         }
@@ -179,7 +183,7 @@ struct DetailItemView: View {
                 .scaledToFit()
                 .frame(width: 120, height: 120)
                 .padding()
-                .foregroundColor(.black)
+                .foregroundColor(Color("TextColor"))
             
             Text(currentItem.name)
                 .font(.title)
@@ -224,8 +228,8 @@ struct DetailItemView: View {
                 Text("Editar")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
+                    .background(Color("ButtonColor"))
+                    .foregroundColor(.black)
                     .cornerRadius(12)
             }
             .padding(.horizontal)
@@ -246,31 +250,46 @@ struct DetailItemView: View {
 
 struct InventoryListItem: View {
     let item: InventoryItem
-
-    var body: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(Color(UIColor.systemGray4))
-                    .frame(width: 48, height: 48)
-                Image(systemName: item.icon)
-                    .foregroundColor(.black)
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .fontWeight(.medium)
-                    .foregroundColor(.black)
-                Text("Status: \(item.status)")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-
-            Spacer()
+    var statusColor: Color {
+        switch item.status.lowercased() {
+        case "guardada": return .green
+        case "emprestada": return .orange
+        case "em uso": return .blue
+        default: return .gray
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
+    }
+    var body: some View {
+        ZStack{
+            Color.menuBar
+            
+            HStack(spacing: 12) {
+                ZStack {
+                    
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(statusColor)).opacity(0.2)
+                        .frame(width: 48, height: 48)
+                    Image(systemName: item.icon)
+                        .foregroundColor(Color("TextColor"))
+                }
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.name)
+                        .fontWeight(.medium)
+                        .foregroundColor(Color("TextColor"))
+                    Text("Status: \(item.status)")
+                        .font(.caption)
+                        .foregroundColor(Color("TextColor"))
+                }
+                
+                Spacer()
+            }
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(Color(statusColor), lineWidth: 3)
+            )
+            .cornerRadius(10)
+        }
     }
 }
 

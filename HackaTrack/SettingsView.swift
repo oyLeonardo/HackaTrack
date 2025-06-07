@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var darkModeEnabled = false
+    @AppStorage("isDarkModeEnabled") var darkModeEnabled: Bool = false
     @State private var scanAlertsEnabled = true
     @State private var zoneAlertsEnabled = true
 
@@ -17,7 +17,6 @@ struct SettingsView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 12)
-            .background(Color(.systemGray6))
 
             ScrollView {
                 VStack(spacing: 24) {
@@ -41,7 +40,16 @@ struct SettingsView: View {
             // Bottom Navigation
             Divider()
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
+//        .background(Color("BackgroundColor").ignoresSafeArea())
+    }
+}
+
+class AppSettings: ObservableObject {
+    // classe para armazenar configs no appstorage
+    @AppStorage("isDarkMode") var isDarkMode: Bool = false {
+        didSet {
+            print("Modo escurao alterado para: \(isDarkMode)")
+        }
     }
 }
 
@@ -56,17 +64,17 @@ struct ToggleRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextColor"))
                 Text(description)
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color("TextColor"))
             }
             Spacer()
             Toggle("", isOn: $isOn)
-                .labelsHidden()
+                .labelsHidden().tint(Color("ButtonColor"))
         }
         .padding()
-        .background(Color.white)
+        .background(Color.menuBar)
         .cornerRadius(10)
     }
 }
@@ -81,17 +89,17 @@ struct NavigationLinkRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
                     .fontWeight(.medium)
-                    .foregroundColor(.black)
+                    .foregroundColor(Color("TextColor"))
                 Text(description)
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color("TextColor"))
             }
             Spacer()
             Image(systemName: "chevron.right")
                 .foregroundColor(.gray)
         }
         .padding()
-        .background(Color.white)
+        .background(Color.menuBar)
         .cornerRadius(10)
     }
 }

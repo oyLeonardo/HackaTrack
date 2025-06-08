@@ -31,7 +31,14 @@ struct MainTabView: View {
                         Spacer().frame(height: 10)
                     }
                     .tabItem {
-                        Label("Settings", systemImage: "gear")
+                        Label("Configurações", systemImage: "gear")
+                    }
+                ProfileView()
+                    .safeAreaInset(edge: .bottom) {
+                        Spacer().frame(height: 10)
+                    }
+                    .tabItem {
+                        Label("Perfil", systemImage: "person.crop.circle.fill")
                     }
             }
             .tint(Color("TextColor"))

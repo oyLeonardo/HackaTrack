@@ -11,6 +11,7 @@ struct InventoryView: View {
     @State private var showRegisterItem = false
     @State private var selectedItem: InventoryItem? = nil
     @State private var search = ""
+    
 
     @State private var items: [InventoryItem] = (1...20).map { i in
         .init(name: "Mochila \(i)", status: "Emprestada", icon: "backpack")
@@ -154,7 +155,7 @@ struct RegisterItemView: View {
 struct DetailItemView: View {
     let currentItem: InventoryItem
     @Environment(\.dismiss) var dismiss
-    
+    @State private var showEditItem = false
     // Exemplo de data para mostrar no detalhe (pode ser passado no model também)
     let lastUpdated = Date()
     
@@ -222,8 +223,7 @@ struct DetailItemView: View {
             Spacer()
             
             Button(action: {
-                // Exemplo: ação de editar, aqui só fecha
-                dismiss()
+                showEditItem = true
             }) {
                 Text("Editar")
                     .frame(maxWidth: .infinity)
@@ -233,6 +233,11 @@ struct DetailItemView: View {
                     .cornerRadius(12)
             }
             .padding(.horizontal)
+        }.fullScreenCover(isPresented: $showEditItem) {
+            EditView(item: currentItem) { editedItem in
+                // Avisa a view de cima sobre a edição, se necessário
+                showEditItem = false
+            }
         }
         .padding()
         .navigationTitle(currentItem.name)
@@ -241,6 +246,122 @@ struct DetailItemView: View {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Fechar") {
                     dismiss()
+                }
+            }
+        }
+    }
+}
+
+import SwiftUI
+
+struct EditView: View {
+    let item: InventoryItem
+    var onSave: (InventoryItem) -> Void
+
+    @State private var name: String
+    @State private var status: String
+    @State private var icon: String
+    @State private var rfid: String = "" // Caso use RFID no seu modelo
+
+    @Environment(\.dismiss) var dismiss
+
+    let statuses = ["Guardada", "Emprestada", "Em Uso"]
+    let icons = ["backpack", "bag", "briefcase", "folder"]
+    let rfids = ["001-ABC", "002-DEF", "003-GHI", "004-JKL", "005-MNO"]
+    // Inicializa os @State com valores do item
+    init(item: InventoryItem, onSave: @escaping (InventoryItem) -> Void) {
+        self.item = item
+        self.onSave = onSave
+        _name = State(initialValue: item.name)
+        _status = State(initialValue: item.status)
+        _icon = State(initialValue: item.icon)
+    }
+
+    var statusColor: Color {
+        switch status.lowercased() {
+        case "guardada": return .green
+        case "emprestada": return .orange
+        case "em uso": return .blue
+        default: return .gray
+        }
+    }
+    var body: some View {
+        NavigationView {
+            VStack{
+                HStack(spacing: 12) {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(statusColor.opacity(0.2))
+                        .frame(width: 48, height: 48)
+                        .overlay(
+                            Image(systemName: icon)
+                                .foregroundColor(Color("TextColor"))
+                        )
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(name.isEmpty ? "Sem Nome" : name)
+                            .fontWeight(.medium)
+                            .foregroundColor(Color("TextColor"))
+                        Text("Status: \(status)")
+                            .font(.caption)
+                            .foregroundColor(Color("TextColor"))
+                    }
+
+                    Spacer()
+                }
+                .padding()
+                .background(Color(UIColor.secondarySystemBackground))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(statusColor, lineWidth: 3)
+                )
+                .cornerRadius(12)
+                .padding(.horizontal)
+
+                // FORMULÁRIO
+                Form {
+                    Section(header: Text("Nome")) {
+                        TextField("Nome da mochila", text: $name)
+                    }
+                    Section(header: Text("Selecionar RFID")) {
+                        Picker("RFID", selection: $rfid) {
+                            ForEach(rfids, id: \.self) { rfid in
+                                Text(rfid).tag(rfid)
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle()) // ou .wheel, .segmented etc
+                    }
+                    Section(header: Text("Status")) {
+                        Picker("Status", selection: $status) {
+                            ForEach(statuses, id: \.self) { status in
+                                Text(status)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                    }
+                    Section(header: Text("Ícone")) {
+                        Picker("Ícone", selection: $icon) {
+                            ForEach(icons, id: \.self) { icon in
+                                Image(systemName: icon).tag(icon)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                    }
+                }
+            }
+            .navigationTitle("Editar Mochila")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Salvar") {
+                        let newItem = InventoryItem(name: name, status: status, icon: icon)
+                        onSave(newItem)
+                        dismiss()
+                    }
+                    .disabled(name.isEmpty)
+                }
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancelar") {
+                        dismiss()
+                    }
                 }
             }
         }

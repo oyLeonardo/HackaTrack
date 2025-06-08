@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		60BB4F142DF5BE9E001A4C07 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB4F132DF5BE9E001A4C07 /* LoginView.swift */; };
 		67E579BA2E032FFC00903C8F /* HackaTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579B92E032FFC00903C8F /* HackaTrackApp.swift */; };
 		67E579BE2E032FFD00903C8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67E579BD2E032FFD00903C8F /* Assets.xcassets */; };
 		67E579C12E032FFD00903C8F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67E579C02E032FFD00903C8F /* Preview Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		60BB4F132DF5BE9E001A4C07 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		67E579B62E032FFC00903C8F /* HackaTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackaTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67E579B92E032FFC00903C8F /* HackaTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackaTrackApp.swift; sourceTree = "<group>"; };
 		67E579BD2E032FFD00903C8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		67E579B82E032FFC00903C8F /* HackaTrack */ = {
 			isa = PBXGroup;
 			children = (
+				60BB4F132DF5BE9E001A4C07 /* LoginView.swift */,
 				67E579CB2E0330A500903C8F /* BagsView.swift */,
 				67E579CD2E03320700903C8F /* InventoryView.swift */,
 				67E579CF2E0332CE00903C8F /* AlertsView.swift */,
@@ -158,6 +161,7 @@
 				67E579D22E0333E100903C8F /* MainTabView.swift in Sources */,
 				67E579CC2E0330A500903C8F /* BagsView.swift in Sources */,
 				67E579CE2E03320700903C8F /* InventoryView.swift in Sources */,
+				60BB4F142DF5BE9E001A4C07 /* LoginView.swift in Sources */,
 				67E579BA2E032FFC00903C8F /* HackaTrackApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

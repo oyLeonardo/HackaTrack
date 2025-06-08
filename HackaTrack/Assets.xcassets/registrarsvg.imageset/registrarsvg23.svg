@@ -1,0 +1,34 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 359 90" width="359" height="90">
+	<title>registrarsvg</title>
+	<style>
+		.s0 { opacity: .38;fill: #000000 } 
+		.s1 { opacity: .49;fill: #000000 } 
+		.s2 { opacity: .64;fill: #000000 } 
+		.s3 { opacity: .8;fill: #000000 } 
+		.s4 { opacity: .87;fill: #000000 } 
+		.s5 { opacity: .96;fill: #000000 } 
+		.s6 { fill: #30bc00 } 
+		.s7 { fill: #fcfcfc } 
+		.s8 { fill: #000100 } 
+		.s9 { fill: #092200 } 
+		.s10 { fill: #2aa600 } 
+	</style>
+	<g id="Camada 1">
+		<path id="Path 0" fill-rule="evenodd" class="s0" d="m62 26l4-2 7 2zm35 1l5-3 8 2zm63-1l5-2 7 2zm174 0l4-2 6 2zm-179 3l1-2h1zm66 31h8v2zm-201 0l-11 2-1-8h1v6zm14 0l13-1v3zm295 0l-11 2v-3z"/>
+		<path id="Path 1" class="s1" d="m8 54v-43h3l21 1h-23v42zm113-28v-1h5l-1 41v-40z"/>
+		<path id="Path 2" fill-rule="evenodd" class="s2" d="m110 26l7-1v-3h4v4h-6v4zm110 1l3-5h4v3l5 2-2 3-1-4zm98-1l3-4h2v3l6 1zm-164 24l5-1-1-4 4 2v3zm15 3l-6 1-1-3z"/>
+		<path id="Path 3" class="s3" d="m177 43l-14-4v-5l17 2v-2l1 3-6 1zm-72 19l10-5-1 12-7 2 6-7z"/>
+		<path id="Path 4" class="s4" d="m57 24l9-2v2l-4 2-4 1zm124 2v-4h6 3v4h-5v4z"/>
+		<path id="Path 5" class="s5" d="m11 11v-3h22l7 3 8 9-4 4-4-8-8-4zm145 13l9-2v2l-5 2-3 1h-1zm173 2l-6-1v-3h15v2l-4 2-4 4zm-275 0l3-2 1 3-3 2z"/>
+		<path id="Path 6" fill-rule="evenodd" class="s6" d="m281 10v-5l6 1 14 6 13 19v23l-13 18-15 7-20-1-18-13-6-12 1-9 14 23 16 7 18-2 12-9 7-15-2-18-10-14zm-8 0l-9 4-5-1 1-4 13-4z"/>
+		<path id="Path 7" class="s7" d="m9 54v-42h23l8 4 4 8-1 11-7 9 9 12 2 3-13 1-10-17h-4v17h-11zm181-32v-5h11v9h10v9h-10v14l2 3h9v10l-13-1-7-4-2-22-5-5v-4h5zm-132 5l4-1h11l9 6 3 13h-25v4l3 3h9l2-3 11 2-7 8-10 3-13-4-5-7-1-5 5-8 1-9zm39 0l13-1 5 4v-4h6 4v40l-2 6-9 7h-13l-9-7-2-6h10l7 5 7-2 1-12-10 5-11-4v-17l-3-5zm60 0l3-1h12l6 3 2 5v2l-17-2v5l14 4 4 10-9 8-16-2-2-9h8v1l1 3 6-1 1-3-6-3h-2l-4-2-4-3 1-13zm63 0l9-1 1 4 2-3 13 1-4 8-11 1-1 16v7h-8zm98 32v-33h11l1 4 4-4h10l-4 10-11 1v23z"/>
+		<path id="Path 8" fill-rule="evenodd" class="s8" d="m227 22h15l14-15 22-6v4h-5l-13 4-1 4 5 1 9-4h8l17 6 10 14 2 18-7 15-12 9-18 2-16-7-14-23-1 9 6 12 18 13 20 1 15-7 13-18v-23l-13-19-14-6v-4l13 4 15 16h6l-3 4v36l11-2v-23l11-1 4-10-6-2v-2l12 2 4 7-7 16-4-3-6 1v25h-18l-5-5-13 16-15 5h-16l-18-8-14-21v13h-35l-12-10-10 9-16 1-11-7-1 7-19-1-2 9-8 8-18 2-16-12-3-9-8 3h-13l-5-3-2 3h-21l-9-10-1 10h-18l-5-5v-57h6v3h-3v43l1 8 11-2v-17h4l10 17 13 2v-3l-2-3-9-12 7-9 1-11 4-4 6 6 1 3-1 9-5 8 1 5 5 7 13 4 10-3 7-8-11-2-2 3h-9l-3-3v-4h25l-3-13-9-6-7-2v-2l11 1 12 9 9-10h19v3l-7 1-8-2-5 3-6 9 3 5v17l11 4 8 2-6 7-7-5h-10l2 6 9 7h13l9-7 2-6 1-41h-5v-3l10 1v-16h18l5 5 2 12v3l-1 2-1 13 4 3 1 4-5 1 2 9 16 2 9-8-6-15 6-1-1-3-2-5-6-3-7-2v-2l16 4 9 9 2 22 7 4 13 1v-10h-9l-2-3v-14h10v-9h-10v-9h-11v5h-3v-9h18l5 9h13l-3 5 1 33 8 2v-9l1-16 11-1 4-8-13-1-5-2zm-17 27h5v-5h-5zm-48-2h2l6 3-1 3-7-2z"/>
+		<path id="Path 9" class="s9" d="m278 5v-4l9 1v4l-6-1z"/>
+		<path id="Path 10" class="s10" d="m273 10v-5h5 3v5z"/>
+		<path id="Path 11" class="s0" d="m145 20l-11 1v-11l11 1h-10v9zm0 40l-10 2v-9 7z"/>
+		<path id="Path 12" class="s3" d="m64 34l8 1 2 6h-14z"/>
+		<path id="Path 13" class="s6" d="m272 19h13l13 10 3 20-10 13-6 3h-15l-11-9-4-8-1-15 17 3 2-3h10l4 4v10l-8 5-7-2-4-8-8-2 2 12 11 8 15-2 8-10v-10l-7-11-6-3-17 2v-4z"/>
+		<path id="Path 14" class="s7" d="m145 20h-10v-9h10zm-10 33v-27h10v34h-10z"/>
+		<path id="Path 15" class="s8" d="m20 21h10l4 4v5l-4 4h-10zm83 14l11 2 1 12-5 4-9-3-1-9zm173 3l6 1v6h-8z"/>
+	</g>
+</svg>

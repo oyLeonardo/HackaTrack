@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		60BB4F142DF5BE9E001A4C07 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB4F132DF5BE9E001A4C07 /* LoginView.swift */; };
+		60BB4F162DF5CCCB001A4C07 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60BB4F152DF5CCCB001A4C07 /* RegisterView.swift */; };
 		67E579BA2E032FFC00903C8F /* HackaTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579B92E032FFC00903C8F /* HackaTrackApp.swift */; };
 		67E579BE2E032FFD00903C8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67E579BD2E032FFD00903C8F /* Assets.xcassets */; };
 		67E579C12E032FFD00903C8F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67E579C02E032FFD00903C8F /* Preview Assets.xcassets */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		60BB4F132DF5BE9E001A4C07 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		60BB4F152DF5CCCB001A4C07 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		67E579B62E032FFC00903C8F /* HackaTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackaTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67E579B92E032FFC00903C8F /* HackaTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackaTrackApp.swift; sourceTree = "<group>"; };
 		67E579BD2E032FFD00903C8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				60BB4F132DF5BE9E001A4C07 /* LoginView.swift */,
+				60BB4F152DF5CCCB001A4C07 /* RegisterView.swift */,
 				67E579CB2E0330A500903C8F /* BagsView.swift */,
 				67E579CD2E03320700903C8F /* InventoryView.swift */,
 				67E579CF2E0332CE00903C8F /* AlertsView.swift */,
@@ -155,6 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60BB4F162DF5CCCB001A4C07 /* RegisterView.swift in Sources */,
 				67E579D02E0332CE00903C8F /* AlertsView.swift in Sources */,
 				67E579C82E03300A00903C8F /* DashboardView.swift in Sources */,
 				67E579D42E0333EF00903C8F /* SettingsView.swift in Sources */,

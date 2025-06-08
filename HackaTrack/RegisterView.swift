@@ -1,8 +1,10 @@
 import SwiftUI
 
-struct LoginView: View {
+struct RegisterView: View {
     @State private var user = ""
+    @State private var name = ""
     @State private var password = ""
+    @State private var confirm_password = ""
     @Environment(\.colorScheme) var colorScheme
     var body: some View {
         ZStack {
@@ -11,17 +13,30 @@ struct LoginView: View {
 
             VStack(spacing: 70) {
                 Spacer()
-                Image("logarSVG").resizable().frame(width: 400,height: 150)
-            
+                    Image("registrarsvg").resizable().frame(width: 370,height: 100)
+                VStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Nome Completo")
+                            .font(.subheadline)
+                            .foregroundColor(Color("TextColor"))
 
-                VStack(spacing: 16) {
+                        TextField(
+                            text: $name,
+                            prompt: Text("Digite seu nome").foregroundColor(.gray)
+                        ) {
+                            Text("Nome")
+                        }
+                        .padding()
+                        .background(Color.loginColors)
+                        .cornerRadius(8)
+                    }
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Usuário")
                             .font(.subheadline)
                             .foregroundColor(Color("TextColor"))
 
                         TextField(
-                            text: $password,
+                            text: $user,
                             prompt: Text("Digite seu usuário").foregroundColor(.gray)
                         ) {
                             Text("Usuário")
@@ -45,17 +60,28 @@ struct LoginView: View {
                         .background(Color.loginColors)
                         .cornerRadius(8)
                     }
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Confirmar Senha")
+                            .font(.subheadline)
+                            .foregroundColor(Color("TextColor"))
 
-
-
+                        TextField(
+                            text: $confirm_password,
+                            prompt: Text("Confirme sua senha").foregroundColor(.gray)
+                        ) {
+                            Text("Usuário")
+                        }
+                        .padding()
+                        .background(Color.loginColors)
+                        .cornerRadius(8)
+                    }
                 }
                 .padding(.horizontal)
 
-                // Botão Next
                 Button(action: {
                     // ação de continuar
                 }) {
-                    Text("Logar")
+                    Text("Registrar")
                         .font(.headline)
                         .foregroundColor(Color(.black))
                         .frame(maxWidth: .infinity)
@@ -73,5 +99,6 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView()
+    RegisterView()
 }
+

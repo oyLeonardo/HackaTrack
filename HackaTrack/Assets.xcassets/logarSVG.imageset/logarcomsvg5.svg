@@ -1,0 +1,20 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 99" width="274" height="99">
+	<title>logarsvgsvgs2</title>
+	<style>
+		.s0 { opacity: 1;fill: #020100 } 
+		.s1 { opacity: .99;fill: #ffffff } 
+		.s2 { opacity: .22;fill: #000000 } 
+		.s3 { opacity: .67;fill: #000000 } 
+		.s4 { opacity: 1;fill: #39f400 } 
+	</style>
+	<g id="img2">
+		<path id="Path 0" class="s0" d="m175 6l3-1h13l2 1 20 10 9 15 1-6h31l9 7-7 19-5-4-5 1v25h-18l-5-4-1-6-6 11-12 10-12 4h-17l-15-6-14-16-3 16-14 10h-10l-2-1-17-13-3-9-10 5-15-2-7-6-1 7h-39l-5-4v-58h19l5 5v35h3v3h-12v-39h-11v49h24l8 1v-11h-3v-3l5-17 10-8h19l11 10 12-11h30l6 5 11-16z"/>
+		<path id="Path 1" class="s1" d="m48 64h-24v-49h11v39l20 1v9z"/>
+		<path id="Path 2" fill-rule="evenodd" class="s2" d="m175 6v-1h3zm18 0l-2-1h2zm-76 86v-1l2 1z"/>
+		<path id="Path 3" class="s3" d="m35 54h12v-3h6v3h3v11l-8-1h7v-9z"/>
+		<path id="Path 4" class="s1" d="m61 37l10-8h13l9 7 3 14-7 12-8 3-15-3-1-7-5-3zm50-8h10l5 4v-4h11v39l-3 8-11 7-12-1-7-5-2-7h10l2 4h9l3-3v-11l-7 5-11-1-4-4-1-23zm140 6l-2 4-11 1-1 24h-10v-35h10l2 4 5-4h8 1l-1 4z"/>
+		<path id="Path 5" class="s4" d="m176 9l21 2 15 11 7 13 1 18-6 16-17 12-23 2-13-6-14-20 1-23 22 6 18-3 5 7-4 10-10 1-10-11h-4v7l7 10 16 3 13-12-1-13-12-11-17 2v-4l6-3h13l13 10 3 7-1 16-5 7-10 6h-15l-5-3-9-11-1-13-9-1 1 15 4 8 6 7 12 6 14 1 10-3 10-8 7-15-2-18-10-14-14-6-25 3 1-4z"/>
+		<path id="Path 6" class="s3" d="m60 52l-2-10 3-5z"/>
+		<path id="Path 7" class="s0" d="m75 37l9 3 1 11-4 5-10-2-2-10zm41 1l10 3v12l-3 3h-8l-3-3v-11zm65 4l6 2v5h-8z"/>
+	</g>
+</svg>

@@ -7,26 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		676E68CA2E0B25ED00325F0D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676E68C92E0B25ED00325F0D /* LoginView.swift */; };
+		676E68CC2E0B25F800325F0D /* SignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676E68CB2E0B25F800325F0D /* SignUpView.swift */; };
+		676E68CE2E0B260800325F0D /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676E68CD2E0B260800325F0D /* UserModel.swift */; };
+		676E68D42E0B2EF500325F0D /* BagsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676E68D32E0B2EF500325F0D /* BagsAPI.swift */; };
+		676E68D72E0B315B00325F0D /* Endpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676E68D62E0B315B00325F0D /* Endpoints.swift */; };
+		676E68D92E0B32BB00325F0D /* UserTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676E68D82E0B32BB00325F0D /* UserTemplate.swift */; };
 		67E579BA2E032FFC00903C8F /* HackaTrackApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579B92E032FFC00903C8F /* HackaTrackApp.swift */; };
 		67E579BE2E032FFD00903C8F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67E579BD2E032FFD00903C8F /* Assets.xcassets */; };
 		67E579C12E032FFD00903C8F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 67E579C02E032FFD00903C8F /* Preview Assets.xcassets */; };
 		67E579C82E03300A00903C8F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579C72E03300A00903C8F /* DashboardView.swift */; };
-		67E579CC2E0330A500903C8F /* BagsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579CB2E0330A500903C8F /* BagsView.swift */; };
 		67E579CE2E03320700903C8F /* InventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579CD2E03320700903C8F /* InventoryView.swift */; };
-		67E579D02E0332CE00903C8F /* AlertsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579CF2E0332CE00903C8F /* AlertsView.swift */; };
 		67E579D22E0333E100903C8F /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579D12E0333E100903C8F /* MainTabView.swift */; };
 		67E579D42E0333EF00903C8F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67E579D32E0333EF00903C8F /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		676E68C92E0B25ED00325F0D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		676E68CB2E0B25F800325F0D /* SignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpView.swift; sourceTree = "<group>"; };
+		676E68CD2E0B260800325F0D /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		676E68D32E0B2EF500325F0D /* BagsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagsAPI.swift; sourceTree = "<group>"; };
+		676E68D62E0B315B00325F0D /* Endpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoints.swift; sourceTree = "<group>"; };
+		676E68D82E0B32BB00325F0D /* UserTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTemplate.swift; sourceTree = "<group>"; };
 		67E579B62E032FFC00903C8F /* HackaTrack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HackaTrack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		67E579B92E032FFC00903C8F /* HackaTrackApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HackaTrackApp.swift; sourceTree = "<group>"; };
 		67E579BD2E032FFD00903C8F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		67E579C02E032FFD00903C8F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		67E579C72E03300A00903C8F /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		67E579CB2E0330A500903C8F /* BagsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagsView.swift; sourceTree = "<group>"; };
 		67E579CD2E03320700903C8F /* InventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryView.swift; sourceTree = "<group>"; };
-		67E579CF2E0332CE00903C8F /* AlertsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsView.swift; sourceTree = "<group>"; };
 		67E579D12E0333E100903C8F /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		67E579D32E0333EF00903C8F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -42,6 +50,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		676E68C82E0B25DD00325F0D /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				676E68C92E0B25ED00325F0D /* LoginView.swift */,
+				676E68CB2E0B25F800325F0D /* SignUpView.swift */,
+				676E68CD2E0B260800325F0D /* UserModel.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		676E68D22E0B2ED300325F0D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				676E68D32E0B2EF500325F0D /* BagsAPI.swift */,
+				676E68D62E0B315B00325F0D /* Endpoints.swift */,
+				676E68D82E0B32BB00325F0D /* UserTemplate.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		67E579AD2E032FFC00903C8F = {
 			isa = PBXGroup;
 			children = (
@@ -61,9 +89,9 @@
 		67E579B82E032FFC00903C8F /* HackaTrack */ = {
 			isa = PBXGroup;
 			children = (
-				67E579CB2E0330A500903C8F /* BagsView.swift */,
+				676E68D22E0B2ED300325F0D /* Services */,
+				676E68C82E0B25DD00325F0D /* Auth */,
 				67E579CD2E03320700903C8F /* InventoryView.swift */,
-				67E579CF2E0332CE00903C8F /* AlertsView.swift */,
 				67E579D12E0333E100903C8F /* MainTabView.swift */,
 				67E579C72E03300A00903C8F /* DashboardView.swift */,
 				67E579B92E032FFC00903C8F /* HackaTrackApp.swift */,
@@ -152,12 +180,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67E579D02E0332CE00903C8F /* AlertsView.swift in Sources */,
 				67E579C82E03300A00903C8F /* DashboardView.swift in Sources */,
+				676E68D72E0B315B00325F0D /* Endpoints.swift in Sources */,
 				67E579D42E0333EF00903C8F /* SettingsView.swift in Sources */,
+				676E68D92E0B32BB00325F0D /* UserTemplate.swift in Sources */,
 				67E579D22E0333E100903C8F /* MainTabView.swift in Sources */,
-				67E579CC2E0330A500903C8F /* BagsView.swift in Sources */,
 				67E579CE2E03320700903C8F /* InventoryView.swift in Sources */,
+				676E68CA2E0B25ED00325F0D /* LoginView.swift in Sources */,
+				676E68D42E0B2EF500325F0D /* BagsAPI.swift in Sources */,
+				676E68CC2E0B25F800325F0D /* SignUpView.swift in Sources */,
+				676E68CE2E0B260800325F0D /* UserModel.swift in Sources */,
 				67E579BA2E032FFC00903C8F /* HackaTrackApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

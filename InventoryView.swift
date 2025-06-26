@@ -1,4 +1,5 @@
 import SwiftUI
+import Foundation
 
 // MARK: - Modelos
 
@@ -22,9 +23,162 @@ struct AvailableUID: Codable, Identifiable, Hashable {
     }
 }
 
+// MARK: - ViewModels
+@MainActor
+class InventoryViewModel: ObservableObject {
+    @Published var bags: [BagModel] = []
+    @Published var notifications: [NotificationModel] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    @Published var search = ""
+    @Published var activitySearch = ""
+    @Published var selectedStateFilter: BagState? = nil // Filtro de estado
+    
+    private let endpoints = Endpoints()
+
+    var filteredBags: [BagModel] {
+        bags.filter { bag in
+            let stateMatches = (selectedStateFilter == nil || bag.state == selectedStateFilter)
+            let searchMatches = (search.isEmpty || bag.name.localizedCaseInsensitiveContains(search))
+            return stateMatches && searchMatches
+        }
+    }
+    
+    var filteredNotifications: [NotificationModel] {
+        if activitySearch.isEmpty { return notifications }
+        return notifications.filter {
+            $0.uid.localizedCaseInsensitiveContains(activitySearch) ||
+            $0.hour.localizedCaseInsensitiveContains(activitySearch) ||
+            $0.status.localizedCaseInsensitiveContains(activitySearch)
+        }
+    }
+    
+    // Função unificada para buscar todos os dados iniciais
+    func fetchInitialData() async {
+        isLoading = true
+        errorMessage = nil
+        // Executa as duas chamadas de rede em paralelo para maior eficiência
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { await self.fetchBgs() }
+            group.addTask { await self.fetchNotifications() }
+        }
+        isLoading = false
+    }
+
+    func fetchBgs() async {
+        isLoading = true
+        errorMessage = nil
+
+        // Não reseta isLoading aqui para permitir que fetchInitialData controle o estado geral
+        do {
+            self.bags = try await APIService.shared.getRequest(type: [BagModel].self, endpoint: endpoints.getAll)
+        } catch {
+            self.errorMessage = "Erro ao carregar o inventário: \(error.localizedDescription)"
+        }
+    }
+    
+    // Função para buscar notificações
+    func fetchNotifications() async {
+        do {
+            self.notifications = try await APIService.shared.getRequest(type: [NotificationModel].self, endpoint: endpoints.getNot)
+        } catch {
+             self.errorMessage = "Erro ao carregar atividades: \(error.localizedDescription)"
+        }
+    }
+    
+    func addBag(name: String, rfid: String, state: BagState, type: BagType) async {
+        errorMessage = nil
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        let hourString = formatter.string(from: Date())
+
+        let payload = CreateBagPayload(uid: rfid, name: name, state: state, type: type, hour: hourString)
+        
+        struct CreateResponse: Codable {
+            let ok: Bool?
+            let id: String?
+            let rev: String?
+        }
+        
+        do {
+            _ = try await APIService.shared.sendDataRequest(
+                body: payload,
+                responseType: CreateResponse.self,
+                endpoint: endpoints.create,
+                method: .post
+            )
+            // ** AQUI ESTÁ A MUDANÇA **
+            await fetchInitialData()
+        } catch {
+            self.errorMessage = "Erro ao criar a mochila: \(error.localizedDescription)"
+            
+            await fetchInitialData()
+        }
+    }
+    
+    func updateBag(bag: BagModel) async {
+        errorMessage = nil
+        
+        struct UpdateResponse: Codable { let ok: Bool, id: String, rev: String }
+        
+        do {
+            _ = try await APIService.shared.sendDataRequest(
+                body: bag,
+                responseType: UpdateResponse.self,
+                endpoint: endpoints.update,
+                method: .put
+            )
+            // ** AQUI ESTÁ A MUDANÇA **
+            await fetchInitialData()
+        } catch {
+            self.errorMessage = "Erro ao atualizar a mochila: \(error.localizedDescription)"
+            await fetchInitialData()
+        }
+    }
+    
+    func deleteBag(bag: BagModel) async {
+        errorMessage = nil
+        struct DeleteResponse: Codable { let ok: Bool? }
+        
+        do {
+            _ = try await APIService.shared.sendDataRequest(
+                body: bag,
+                responseType: DeleteResponse.self,
+                endpoint: endpoints.delete,
+                method: .delete
+            )
+            // ** AQUI ESTÁ A MUDANÇA **
+            await fetchInitialData() // Recarrega a lista após a exclusão
+        } catch {
+            self.errorMessage = "Erro ao deletar a mochila: \(error.localizedDescription)"
+        }
+    }
+}
+
+@MainActor
+class RegisterItemViewModel: ObservableObject {
+    @Published var availableUIDs: [AvailableUID] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    
+    private let endpoints = Endpoints()
+    
+    func fetchAvailableUIDs() async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            self.availableUIDs = try await APIService.shared.getRequest(type: [AvailableUID].self, endpoint: endpoints.getUIDS)
+        } catch {
+            self.errorMessage = "Erro ao buscar UIDs: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+}
+
 // MARK: - Views
 struct InventoryView: View {
-    @StateObject var viewModel: InventoryViewModel
+    @ObservedObject var viewModel: InventoryViewModel // Agora recebe o ViewModel
     @State private var showRegisterItem = false
     @State private var selectedItem: BagModel? = nil
 
@@ -32,17 +186,22 @@ struct InventoryView: View {
         VStack(spacing: 0) {
             // Top Bar
             HStack {
+                Button(action: { Task {await viewModel.fetchBgs()} }) {
+                    Image(systemName: "arrow.clockwise")
+                        .foregroundColor(Color("TextColor"))
+                        .frame(width: 24, height: 24)
+                        .frame(width: 48, height: 48)
+                }
                 Spacer()
                 Text("Inventário")
                     .font(.title).bold()
-                    .padding(.leading, 24)
                 Spacer()
                 Button(action: { showRegisterItem = true }) {
                     Image(systemName: "plus")
                         .foregroundColor(Color("TextColor"))
                         .frame(width: 24, height: 24)
+                        .frame(width: 48, height: 48)
                 }
-                .frame(width: 48, height: 48)
             }
             .padding(.horizontal)
             .padding(.vertical, 12)
@@ -66,7 +225,7 @@ struct InventoryView: View {
                         Text("Todos")
                             .font(.subheadline).fontWeight(.semibold)
                             .padding(.horizontal, 16).padding(.vertical, 8)
-                            .background(viewModel.selectedStateFilter == nil ? Color.accentColor : Color(UIColor.systemGray5))
+                            .background(viewModel.selectedStateFilter == nil ? Color.black : Color(UIColor.systemGray5))
                             .foregroundColor(viewModel.selectedStateFilter == nil ? .white : Color("TextColor"))
                             .cornerRadius(10)
                     }
@@ -110,6 +269,7 @@ struct InventoryView: View {
             Spacer()
         }
         .background(Color("BackgroundColor").ignoresSafeArea())
+        // A task foi removida daqui, pois agora é gerenciada pela MainTabView
         .fullScreenCover(isPresented: $showRegisterItem) {
             RegisterItemView { name, rfid, state, type in
                 showRegisterItem = false
@@ -202,8 +362,8 @@ struct DetailItemView: View {
     @State private var state: BagState
     @State private var type: BagType
     @State private var isSaving = false
-    @State private var isDeleting = false 
-    @State private var showingDeleteAlert = false 
+    @State private var isDeleting = false
+    @State private var showingDeleteAlert = false
 
     init(itemToEdit: BagModel, viewModel: InventoryViewModel) {
         self.itemToEdit = itemToEdit
@@ -262,6 +422,7 @@ struct DetailItemView: View {
                         Section {
                             Button(role: .destructive) {
                                 showingDeleteAlert = true
+                                Task { await viewModel.fetchBgs() }
                             } label: {
                                 HStack {
                                     Spacer()
@@ -297,7 +458,7 @@ struct DetailItemView: View {
                 .alert("Confirmar Exclusão", isPresented: $showingDeleteAlert) {
                     Button("Deletar", role: .destructive) {
                         Task {
-                            isDeleting = true // Ativa o feedback
+                            isDeleting = true
                             await viewModel.deleteBag(bag: itemToEdit)
                             dismiss()
                         }
@@ -347,4 +508,8 @@ struct InventoryListItem: View {
         }
         .cornerRadius(10)
     }
+}
+
+#Preview {
+    MainTabView()
 }

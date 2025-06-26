@@ -1,59 +1,60 @@
 import SwiftUI
+import Foundation
 
-// MARK: - Main Tab View (Ponto de Entrada Principal)
+import SwiftUI
+
+// MARK: - Gerenciadores de Estado Global
+class AppSettings: ObservableObject {
+    @AppStorage("isDarkModeEnabled") var isDarkMode: Bool = false
+}
+
+class AuthenticationManager: ObservableObject {
+    @Published var isAuthenticated = false
+}
+
+
+// MARK: - Main View (Ponto de Entrada Principal)
 struct MainTabView: View {
     @StateObject private var inventoryViewModel = InventoryViewModel()
     @StateObject private var appSettings = AppSettings()
+    @StateObject private var authManager = AuthenticationManager()
+    
     @State private var selectedTab = 0
 
     var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [.blue, .purple],
-                startPoint: .top,
-                endPoint: .bottom
-            ).ignoresSafeArea()
-            
-            TabView(selection: $selectedTab) {
-                DashboardView(viewModel: inventoryViewModel, selectedTab: $selectedTab)
-                    .safeAreaInset(edge: .bottom) {
-                        Spacer().frame(height: 10)
+        Group {
+             if authManager.isAuthenticated {
+                TabView(selection: $selectedTab) {
+                    DashboardView(viewModel: inventoryViewModel, selectedTab: $selectedTab)
+                        .tabItem { Label("Dashboard", systemImage: "house") }.tag(0)
+                    
+                    InventoryView(viewModel: inventoryViewModel)
+                        .tabItem { Label("Inventário", systemImage: "list.bullet") }.tag(1)
+                    
+                    SettingsView()
+                        .tabItem { Label("Configurações", systemImage: "gear") }.tag(2)
+                }
+                .tint(Color("TextColor"))
+                .task {
+                    // Chama a função unificada que busca todos os dados
+                    await inventoryViewModel.fetchInitialData()
+                }
+                .onReceive(Timer.publish(every: 180, on: .main, in: .common).autoconnect()) { _ in
+                    Task {
+                        await inventoryViewModel.fetchInitialData()
                     }
-                    .tabItem {
-                        Label("Dashboard", systemImage: "house")
-                    }
-                    .tag(0)
-                
-                InventoryView(viewModel: inventoryViewModel)
-                    .safeAreaInset(edge: .bottom) {
-                        Spacer().frame(height: 10)
-                    }
-                    .tabItem {
-                        Label("Inventário", systemImage: "list.bullet")
-                    }
-                    .tag(1)
-                
-                SettingsView()
-                    .safeAreaInset(edge: .bottom) {
-                        Spacer().frame(height: 10)
-                    }
-                    .tabItem {
-                        Label("Settings", systemImage: "gear")
-                    }
-                    .tag(2)
-            }
-            .tint(Color("TextColor"))
-
-            .task {
-                await inventoryViewModel.fetchBgs()
-            }
-            // O tema do aplicativo agora reage às mudanças na configuração.
-            .preferredColorScheme(appSettings.isDarkMode ? .dark : .light)
-            // Fornece o objeto de configurações para todas as views filhas.
-            .environmentObject(appSettings)
+                }
+             } else {
+                 LoginView()
+             }
         }
+        .preferredColorScheme(appSettings.isDarkMode ? .dark : .light)
+        .environmentObject(appSettings)
+        .environmentObject(authManager)
     }
 }
+
+
 
 #Preview {
     MainTabView()

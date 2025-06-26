@@ -29,7 +29,18 @@ class Endpoints {
     let update: String = "/update/bag"; // Atualizar bag
     let getAll: String = "/bags"; // Lista todas as bags
     let getUIDS: String = "/bags/uids"; // lista todos os uids
+    let getNot: String = "/bags/notifications"
 }
+
+/*
+ {
+    "_id": "03ce46233e0e8d66c62fa50e5dd1ee20",
+    "_rev": "1-68abeb65aa740e06f90873346e1dd07a",
+    "uid": "F4CECBF0",
+    "hour": "00:00:02",
+    "status": "Negado"
+  },
+ */
 
 class UserTemplate {
     let username: String = "Teste";
@@ -61,7 +72,7 @@ class APIService {
         components.scheme = scheme
         components.host = host
         components.port = port
-        components.path = "/" + endpoint
+        components.path = endpoint
         
         if let queryItems = queryItems {
             components.queryItems = queryItems

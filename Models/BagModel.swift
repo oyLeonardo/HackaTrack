@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum BagState: String, CaseIterable, Codable, Identifiable {
     var id: String { self.rawValue }

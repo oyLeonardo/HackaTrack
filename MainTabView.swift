@@ -11,6 +11,7 @@ struct MainTabView: View {
                     Label("Dashboard", systemImage: "house")
                 }
 
+
             InventoryView()
                 .safeAreaInset(edge: .bottom) {
                     Spacer().frame(height: 10)

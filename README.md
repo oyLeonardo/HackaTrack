@@ -1,118 +1,34 @@
-# Tarefas
+![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
+![Arduino](https://img.shields.io/badge/-Arduino-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
+![Node-RED](https://img.shields.io/badge/Node--RED-%238F0000.svg?style=for-the-badge&logo=node-red&logoColor=white)
 
-## Estilização
+🎒 Projeto de Gestão de Equipamentos HackaTruck
 
-## Integração
-CRUD BAG
-- Editar
-- Remover mochila (_id, _rev)
-- Listagem
-- Registrar BAG - RFID
-- Listar os últimos UIDs em tela e no select (fazer com o cartão de administrador)
+🚀 Sobre o Projeto
+Este projeto nasceu da nossa experiência e observação no programa HackaTruck, onde identificamos uma necessidade crucial: a gestão eficiente dos equipamentos fornecidos, em especial as mochilas contendo MacBooks que eram fornecidas para os alunos no momento da aula. A ausência de um sistema robusto para controle gerava desafios como dificuldade em localizar itens, possíveis extravios e processos manuais demorados e propensos a erros. 
 
-## Modelagem
-Strutura do POST
-{
-    "name": "gustavo bag",
-    "hour": "16:40",
-    "state": "emprestada",
-    "type": “1”,
-    “UID”: … da tag
-}
+Nossa solução foi feita em um aplicativo, concebida para otimizar e simplificar a administração desses ativos. Ela visa proporcionar rastreabilidade completa, organização aprimorada e responsabilização clara, transformando a maneira como os equipamentos são gerenciados dentro do projeto. O objetivo é garantir que cada item esteja onde precisa estar, com agilidade e precisão.
 
-Extra
-- Notificacao*
-- Coletar informação do Mac*
-- Mockar Login **
+✨ Tecnologias Utilizadas
+O desenvolvimento desta solução abrangeu diversas tecnologias, combinando o poder do desenvolvimento de aplicações móveis com a flexibilidade da Internet das Coisas (IoT):
+SwiftUI: Utilizado para a criação da interface do usuário do aplicativo, garantindo uma experiência intuitiva e fluida em dispositivos iOS.
+Node-RED: Uma ferramenta para programação baseada em fluxo, essencial para a integração e processamento de dados dos dispositivos IoT.
+IoT (Internet das Coisas): A base da nossa solução para permitir a comunicação e interação entre os objetos físicos e o sistema digital.
 
-# Endpoints
+🔌 Componentes IoT
+Para o coração da nossa solução de rastreamento, utilizamos os seguintes componentes de hardware:
+- Arduino: A plataforma de prototipagem eletrônica foi fundamental para a conexão e controle dos módulos de identificação.
+- Módulo RFID (Radio-Frequency Identification): Responsável pela leitura das tags de identificação.
+- Tags de Reconhecimento (RFID Tags): Acopladas às mochilas e MacBooks, permitindo sua identificação única e rastreamento.
 
-## Create with uid
-http://192.168.128.91:1880/create/bag/uid
-Ex:
-{
-    "hour": "16:40",
-    "uid": "BD42A389"
-}
+🤝 Como Contribuir
+Interessado em contribuir? Siga os passos abaixo:
 
-## Get latest bags with uids
-http://192.168.128.91:1880/bags/uids
+- Faça um Fork do projeto.
+- Crie uma Branch para sua feature `git checkout -b feature/AmazingFeature`.
+- Faça o Commit das suas mudanças `git commit -m 'Add some AmazingFeature'`.
+- Faça o Push para a Branch `git push origin feature/AmazingFeature`.
+- Abra um PR (Pull Request).
 
-## Create with all info
-http://192.168.128.91:1880/create/bag
-Ex:
-
-{
-    "name": "Jorge",
-    "hour": "16:09",
-    "state": "Interditada",
-    "type": "Mochila",
-    "uid": "BD42A389"
-}
-
-## Get all bags
-http://192.168.128.91:1880/bags
-
-## Get bag
-http://192.168.128.91:1880/bags
-
-## Show
-
-Pesquisar de acordo com o id cb9610ff856f6d9578759514d55c973
-
-http://127.0.0.1:1880/bag?_id=0cb9610ff856f6d9578759514d55c973
-
-## Delete
-http://192.168.128.91:1880/delete/bag
-Ex:
-{
-    "_id": "5b2da77729da3fdfbd9760a11250e884",
-    "_rev": "1-48486e9e63045b051122e5117195ccb0"
-}
-
-## Update
-
-E preciso passar toda a info, atualizando so o atributo que for atualizado
-
-{
-    "name": "Jorge",
-    "hour": "16:09",
-    "state": "Interditada",
-    "type": "Mochila",
-    "uid": "BD42A389"
-}
-
-http://192.168.128.91:1880/update/bag
-
-# Divisoes
-
-Integração
-
-Estilização
-
-CRUD BAG
-- Editar
-- Remover mochila (_id, _rev)
-- Listagem
-- Registrar BAG - RFID
-- Listar os últimos UIDs em tela e no select (fazer com o cartão de administrador)
-
-Modelagem
-Strutura do POST
-{
-    "name": "gustavo bag",
-    "hour": "16:40",
-    "state": "emprestada",
-    "type": “1”,
-    “UID”: … da tag
-}
-
-Extra
-- Notificacao*
-- Coletar informação do Mac*
-- Mockar Login **
-
-Ultima tag identificada
-
-
-
+📄 Licença
+Distribuído sob a Licença MIT. Veja `LICENSE` para mais informações.

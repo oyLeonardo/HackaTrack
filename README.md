@@ -2,7 +2,7 @@
 
 <img src="https://i.imgur.com/7tjl4gr.png" width="30%" alt="Project Logo"/>
 
-# HACKATRACK
+# HackaTrack
 
 🎒 **Gestão Inteligente de Equipamentos - Projeto HackaTruck**
 

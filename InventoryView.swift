@@ -22,200 +22,67 @@ struct AvailableUID: Codable, Identifiable, Hashable {
     }
 }
 
-enum BagState: String, CaseIterable, Codable, Identifiable {
-    var id: String { self.rawValue }
-    case guardada = "Guardada"
-    case emUso = "Em Uso"
-    case perdida = "Perdida"
-    case interditada = "Interditada"
-    case emprestada = "Emprestada"
-    
-    var associatedColor: Color {
-        switch self {
-        case .guardada: .green
-        case .emUso, .emprestada: .blue
-        case .perdida: .red
-        case .interditada: .yellow
-        }
-    }
-    
-    init?(fromRawValue: String) {
-        self.init(rawValue: fromRawValue.capitalized)
-    }
-}
-
-enum BagType: String, CaseIterable, Codable, Identifiable {
-    var id: String { self.rawValue }
-    case mochila = "Mochila"
-    case generico = "Genérico"
-    
-    var iconName: String {
-        switch self {
-        case .mochila: "backpack.fill"
-        case .generico: "bag.fill"
-        }
-    }
-}
-
-struct BagModel: Identifiable, Codable, Equatable {
-    var id: String { uid }
-    let uid: String
-    var rev: String
-    var name: String
-    var state: BagState
-    var type: BagType
-    var hour: String
-
-    enum CodingKeys: String, CodingKey {
-        case uid = "_id"
-        case rev = "_rev"
-        case name, hour, state, type
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.uid = try container.decode(String.self, forKey: .uid)
-        self.rev = try container.decode(String.self, forKey: .rev)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.hour = try container.decode(String.self, forKey: .hour)
-        
-        let stateString = try container.decode(String.self, forKey: .state)
-        self.state = BagState(fromRawValue: stateString) ?? .interditada
-        
-        let typeString = try container.decode(String.self, forKey: .type)
-        self.type = (typeString == "1") ? .mochila : .generico
-    }
-    
-    init(uid: String, rev: String, name: String, state: BagState, type: BagType, hour: String) {
-        self.uid = uid
-        self.rev = rev
-        self.name = name
-        self.state = state
-        self.type = type
-        self.hour = hour
-    }
-    
-    static func == (lhs: BagModel, rhs: BagModel) -> Bool {
-        return lhs.id == rhs.id
-    }
-}
-
-// MARK: - ViewModels
-@MainActor
-class InventoryViewModel: ObservableObject {
-    @Published var bags: [BagModel] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    @Published var search = ""
-    
-    var filteredBags: [BagModel] {
-        bags.filter { search.isEmpty || $0.name.localizedCaseInsensitiveContains(search) }
-    }
-    
-    func fetchBags() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.bags = try await APIService.shared.getRequest(type: [BagModel].self, endpoint: "bags")
-        } catch {
-            self.errorMessage = "Erro ao carregar o inventário: \(error.localizedDescription)"
-        }
-        isLoading = false
-    }
-    
-    func addBag(name: String, rfid: String, state: BagState, type: BagType) async {
-        errorMessage = nil
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        let hourString = formatter.string(from: Date())
-
-        let payload = CreateBagPayload(uid: rfid, name: name, state: state, type: type, hour: hourString)
-        
-        struct CreateResponse: Codable {
-            let ok: Bool?
-            let id: String?
-            let rev: String?
-        }
-        
-        do {
-            _ = try await APIService.shared.postRequest(
-                body: payload,
-                responseType: CreateResponse.self,
-                endpoint: "create/bag"
-            )
-            await fetchBags()
-        } catch {
-            self.errorMessage = "Erro ao criar a mochila: \(error.localizedDescription)"
-        }
-    }
-    
-    func updateBag(bag: BagModel) async {
-        isLoading = true
-        errorMessage = nil
-        
-        struct UpdateResponse: Codable { let ok: Bool, id: String, rev: String }
-        
-        do {
-            // ** AQUI ESTÁ A MUDANÇA **
-            // Trocado de postRequest para putRequest para a atualização.
-            _ = try await APIService.shared.putRequest(body: bag, responseType: UpdateResponse.self, endpoint: "update/bag")
-            await fetchBags()
-        } catch {
-            self.errorMessage = "Erro ao atualizar a mochila: \(error.localizedDescription)"
-        }
-        
-        isLoading = false
-    }
-}
-
-@MainActor
-class RegisterItemViewModel: ObservableObject {
-    @Published var availableUIDs: [AvailableUID] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
-    
-    func fetchAvailableUIDs() async {
-        isLoading = true
-        errorMessage = nil
-        do {
-            self.availableUIDs = try await APIService.shared.getRequest(type: [AvailableUID].self, endpoint: "bags/uids")
-        } catch {
-            self.errorMessage = "Erro ao buscar UIDs: \(error.localizedDescription)"
-        }
-        isLoading = false
-    }
-}
-
 // MARK: - Views
 struct InventoryView: View {
-    @StateObject private var viewModel = InventoryViewModel()
+    @StateObject var viewModel: InventoryViewModel
     @State private var showRegisterItem = false
     @State private var selectedItem: BagModel? = nil
 
     var body: some View {
         VStack(spacing: 0) {
+            // Top Bar
             HStack {
                 Spacer()
-                Text("Inventário").font(.title).bold()
+                Text("Inventário")
+                    .font(.title).bold()
+                    .padding(.leading, 24)
                 Spacer()
                 Button(action: { showRegisterItem = true }) {
                     Image(systemName: "plus")
-                        .foregroundColor(.primary)
-                        .font(.title2)
+                        .foregroundColor(Color("TextColor"))
+                        .frame(width: 24, height: 24)
                 }
+                .frame(width: 48, height: 48)
             }
-            .padding()
-            .background(Color(.systemGray6))
+            .padding(.horizontal)
+            .padding(.vertical, 12)
 
+            // Search Field
             HStack {
                 Image(systemName: "magnifyingglass").foregroundColor(.gray)
-                TextField("Buscar...", text: $viewModel.search)
+                    .padding(.leading, 12)
+                TextField("Search", text: $viewModel.search)
+                    .padding(.vertical, 10)
             }
-            .padding(10)
-            .background(Color(.systemGray5))
-            .cornerRadius(10)
+            .background(Color(UIColor.systemGray4))
+            .cornerRadius(12)
             .padding(.horizontal)
+            .padding(.bottom, 10)
+            
+            // Filter Bar
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Button(action: { viewModel.selectedStateFilter = nil }) {
+                        Text("Todos")
+                            .font(.subheadline).fontWeight(.semibold)
+                            .padding(.horizontal, 16).padding(.vertical, 8)
+                            .background(viewModel.selectedStateFilter == nil ? Color.accentColor : Color(UIColor.systemGray5))
+                            .foregroundColor(viewModel.selectedStateFilter == nil ? .white : Color("TextColor"))
+                            .cornerRadius(10)
+                    }
+                    ForEach(BagState.allCases) { state in
+                        Button(action: { viewModel.selectedStateFilter = state }) {
+                            Text(state.rawValue)
+                                .font(.subheadline).fontWeight(.semibold)
+                                .padding(.horizontal, 16).padding(.vertical, 8)
+                                .background(viewModel.selectedStateFilter == state ? state.associatedColor : Color(UIColor.systemGray5))
+                                .foregroundColor(viewModel.selectedStateFilter == state ? .white : Color("TextColor"))
+                                .cornerRadius(10)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
             .padding(.bottom, 10)
 
             ZStack {
@@ -224,11 +91,11 @@ struct InventoryView: View {
                 } else if let errorMessage = viewModel.errorMessage {
                     VStack {
                         Text(errorMessage).foregroundColor(.red).multilineTextAlignment(.center)
-                        Button("Tentar Novamente") { Task { await viewModel.fetchBags() } }.padding(.top)
+                        Button("Tentar Novamente") { Task { await viewModel.fetchBgs() } }.padding(.top)
                     }
                 } else {
                     ScrollView {
-                        VStack(spacing: 12) {
+                        VStack(spacing: 8) {
                             ForEach(viewModel.filteredBags) { item in
                                 Button(action: { selectedItem = item }) {
                                     InventoryListItem(item: item)
@@ -236,14 +103,14 @@ struct InventoryView: View {
                             }
                         }
                         .padding(.horizontal)
+                        .padding(.bottom)
                     }
                 }
             }
             Spacer()
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
-        .task { await viewModel.fetchBags() }
-        .sheet(isPresented: $showRegisterItem) {
+        .background(Color("BackgroundColor").ignoresSafeArea())
+        .fullScreenCover(isPresented: $showRegisterItem) {
             RegisterItemView { name, rfid, state, type in
                 showRegisterItem = false
                 Task {
@@ -251,10 +118,8 @@ struct InventoryView: View {
                 }
             }
         }
-        .sheet(item: $selectedItem) { item in
-            NavigationView {
-                DetailItemView(currentItem: item, viewModel: viewModel)
-            }
+        .fullScreenCover(item: $selectedItem) { item in
+            DetailItemView(itemToEdit: item, viewModel: viewModel)
         }
     }
 }
@@ -272,106 +137,184 @@ struct RegisterItemView: View {
     
     var body: some View {
         NavigationView {
-            Form {
-                Section(header: Text("Nome")) {
-                    TextField("Nome da mochila", text: $name)
+            VStack {
+                HStack(spacing: 12) {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(state.associatedColor.opacity(0.2))
+                        .frame(width: 48, height: 48)
+                        .overlay(Image(systemName: type.iconName).foregroundColor(Color("TextColor")))
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(name.isEmpty ? "Nova Mochila" : name)
+                            .fontWeight(.medium).foregroundColor(Color("TextColor"))
+                        Text("Status: \(state.rawValue)").font(.caption).foregroundColor(Color("TextColor"))
+                    }
+                    Spacer()
                 }
+                .padding()
+                .background(Color(UIColor.secondarySystemBackground))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(state.associatedColor, lineWidth: 3))
+                .cornerRadius(12).padding([.horizontal, .top])
                 
-                Section(header: Text("RFID (UID)")) {
-                    if viewModel.isLoading { ProgressView() }
-                    else if let errorMessage = viewModel.errorMessage { Text(errorMessage).foregroundColor(.red) }
-                    else {
-                        Picker("Selecione o UID", selection: $selectedRfid) {
-                            Text("Nenhum").tag("")
-                            ForEach(viewModel.availableUIDs) { uidInfo in
-                                Text(uidInfo.uid).tag(uidInfo.uid)
+                Form {
+                    Section(header: Text("Nome")) { TextField("Nome da mochila", text: $name) }
+                    Section(header: Text("RFID (UID)")) {
+                        if viewModel.isLoading { ProgressView() }
+                        else if let errorMessage = viewModel.errorMessage { Text(errorMessage).foregroundColor(.red) }
+                        else {
+                            Picker("Selecione o UID", selection: $selectedRfid) {
+                                Text("Nenhum").tag("")
+                                ForEach(viewModel.availableUIDs) { Text($0.uid).tag($0.uid) }
                             }
                         }
                     }
+                    Section(header: Text("Tipo")) {
+                        Picker("Tipo", selection: $type) {
+                            ForEach(BagType.allCases) { Text($0.rawValue).tag($0) }
+                        }.pickerStyle(.segmented)
+                    }
+                    Section(header: Text("Status")) {
+                        Picker("Status", selection: $state) {
+                            ForEach(BagState.allCases) { Text($0.rawValue).tag($0) }
+                        }.pickerStyle(.segmented)
+                    }
                 }
-                
-                Section(header: Text("Tipo")) {
-                    Picker("Tipo", selection: $type) {
-                        ForEach(BagType.allCases) { Text($0.rawValue).tag($0) }
-                    }.pickerStyle(.segmented)
-                }
-                
-                Section(header: Text("Status")) {
-                    Picker("Status", selection: $state) {
-                        ForEach(BagState.allCases) { Text($0.rawValue).tag($0) }
-                    }.pickerStyle(.segmented)
-                }
+                .scrollContentBackground(.hidden)
             }
+            .background(Color("BackgroundColor").ignoresSafeArea())
             .navigationTitle("Cadastrar Mochila")
             .task { await viewModel.fetchAvailableUIDs() }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Salvar") { onSave(name, selectedRfid, state, type) }
-                    .disabled(name.isEmpty || selectedRfid.isEmpty)
+                    Button("Salvar") { onSave(name, selectedRfid, state, type) }.disabled(name.isEmpty || selectedRfid.isEmpty)
                 }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancelar") { dismiss() }
-                }
+                ToolbarItem(placement: .cancellationAction) { Button("Cancelar") { dismiss() } }
             }
         }
     }
 }
 
 struct DetailItemView: View {
-    @State private var currentItem: BagModel
+    let itemToEdit: BagModel
     @ObservedObject var viewModel: InventoryViewModel
     @Environment(\.dismiss) var dismiss
 
-    init(currentItem: BagModel, viewModel: InventoryViewModel) {
-        _currentItem = State(initialValue: currentItem)
+    @State private var name: String
+    @State private var state: BagState
+    @State private var type: BagType
+    @State private var isSaving = false
+    @State private var isDeleting = false 
+    @State private var showingDeleteAlert = false 
+
+    init(itemToEdit: BagModel, viewModel: InventoryViewModel) {
+        self.itemToEdit = itemToEdit
         self.viewModel = viewModel
+        _name = State(initialValue: itemToEdit.name)
+        _state = State(initialValue: itemToEdit.state)
+        _type = State(initialValue: itemToEdit.type)
     }
 
     var body: some View {
-        Form {
-            Section(header: Text("Informações Editáveis")) {
-                TextField("Nome", text: $currentItem.name)
-                
-                Picker("Tipo", selection: $currentItem.type) {
-                    ForEach(BagType.allCases) { type in
-                        Text(type.rawValue).tag(type)
+        NavigationView {
+            ZStack {
+                VStack {
+                    HStack(spacing: 12) {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(state.associatedColor.opacity(0.2))
+                            .frame(width: 48, height: 48)
+                            .overlay(Image(systemName: type.iconName).foregroundColor(Color("TextColor")))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(name.isEmpty ? "Sem Nome" : name)
+                                .fontWeight(.medium).foregroundColor(Color("TextColor"))
+                            Text("Status: \(state.rawValue)").font(.caption).foregroundColor(Color("TextColor"))
+                        }
+                        Spacer()
+                    }
+                    .padding()
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(state.associatedColor, lineWidth: 3))
+                    .cornerRadius(12).padding([.horizontal, .top])
+                    
+                    Form {
+                        Section(header: Text("Informações Editáveis")) {
+                            TextField("Nome", text: $name)
+                            Picker("Tipo", selection: $type) {
+                                ForEach(BagType.allCases) { Text($0.rawValue).tag($0) }
+                            }.pickerStyle(.segmented)
+                            Picker("Status", selection: $state) {
+                                ForEach(BagState.allCases) { Text($0.rawValue).tag($0) }
+                            }.pickerStyle(.segmented)
+                        }
+                        Section(header: Text("Informações do Sistema")) {
+                            VStack(alignment: .leading) {
+                                Text("ID do Documento:").fontWeight(.semibold)
+                                Text(itemToEdit.uid).font(.caption).foregroundColor(.gray)
+                            }
+                            VStack(alignment: .leading) {
+                                Text("Revisão:").fontWeight(.semibold)
+                                Text(itemToEdit.rev).font(.caption).foregroundColor(.gray)
+                            }
+                            VStack(alignment: .leading) {
+                                Text("Última Atualização (Hora):").fontWeight(.semibold)
+                                Text(itemToEdit.hour)
+                            }.font(.caption).foregroundColor(.gray)
+                        }
+                        
+                        Section {
+                            Button(role: .destructive) {
+                                showingDeleteAlert = true
+                            } label: {
+                                HStack {
+                                    Spacer()
+                                    Image(systemName: "trash")
+                                    Text("Deletar Mochila")
+                                    Spacer()
+                                }
+                            }
+                        }
+                    }
+                    .scrollContentBackground(.hidden)
+                }
+                .background(Color("BackgroundColor").ignoresSafeArea())
+                .navigationTitle("Detalhes da Mochila")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) { Button("Fechar") { dismiss() }.disabled(isDeleting || isSaving) }
+                    ToolbarItem(placement: .confirmationAction) {
+                        if isSaving {
+                            ProgressView()
+                        } else {
+                            Button("Salvar") {
+                                Task {
+                                    isSaving = true
+                                    let updatedBag = BagModel(uid: itemToEdit.uid, rev: itemToEdit.rev, name: name, state: state, type: type, hour: Date().formatted(.dateTime.hour().minute()))
+                                    await viewModel.updateBag(bag: updatedBag)
+                                    dismiss()
+                                }
+                            }.disabled(isDeleting)
+                        }
                     }
                 }
-                
-                Picker("Status", selection: $currentItem.state) {
-                    ForEach(BagState.allCases) { state in
-                        Text(state.rawValue).tag(state)
+                .alert("Confirmar Exclusão", isPresented: $showingDeleteAlert) {
+                    Button("Deletar", role: .destructive) {
+                        Task {
+                            isDeleting = true // Ativa o feedback
+                            await viewModel.deleteBag(bag: itemToEdit)
+                            dismiss()
+                        }
                     }
+                    Button("Cancelar", role: .cancel) {}
+                } message: {
+                    Text("Tem certeza de que deseja deletar a mochila \"\(itemToEdit.name)\"? Esta ação não pode ser desfeita.")
                 }
-            }
-            
-            Section(header: Text("Informações do Sistema")) {
-                VStack(alignment: .leading) {
-                    Text("ID do Documento:").fontWeight(.semibold)
-                    Text(currentItem.uid).font(.caption).foregroundColor(.gray)
-                }
-                VStack(alignment: .leading) {
-                    Text("Revisão:").fontWeight(.semibold)
-                    Text(currentItem.rev).font(.caption).foregroundColor(.gray)
-                }
-                VStack(alignment: .leading) {
-                    Text("Última Atualização (Hora):").fontWeight(.semibold)
-                    Text(currentItem.hour)
-                }.font(.caption).foregroundColor(.gray)
-            }
-        }
-        .navigationTitle("Editar Mochila")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancelar") { dismiss() }
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Salvar") {
-                    Task {
-                        await viewModel.updateBag(bag: currentItem)
-                        dismiss()
-                    }
+                .disabled(isDeleting || isSaving)
+
+                if isDeleting {
+                    Color.black.opacity(0.4).edgesIgnoringSafeArea(.all)
+                    ProgressView("Deletando...")
+                        .padding(25)
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(10)
+                        .shadow(radius: 10)
                 }
             }
         }
@@ -382,26 +325,26 @@ struct InventoryListItem: View {
     let item: BagModel
 
     var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: item.type.iconName)
-                .font(.title)
-                .frame(width: 48, height: 48)
-                .background(item.state.associatedColor.opacity(0.2))
-                .foregroundColor(item.state.associatedColor)
-                .cornerRadius(10)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(item.name).fontWeight(.bold).foregroundColor(.primary)
-                Text("Status: \(item.state.rawValue)").font(.caption).foregroundColor(.secondary)
+        ZStack {
+            Color("menuBar")
+            
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(item.state.associatedColor.opacity(0.2))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: item.type.iconName)
+                        .foregroundColor(Color("TextColor"))
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.name).fontWeight(.medium).foregroundColor(Color("TextColor"))
+                    Text("Status: \(item.state.rawValue)").font(.caption).foregroundColor(Color("TextColor").opacity(0.8))
+                }
+                Spacer()
             }
-            Spacer()
+            .padding()
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(item.state.associatedColor, lineWidth: 3))
         }
-        .padding()
-        .background(.background)
-        .cornerRadius(12)
+        .cornerRadius(10)
     }
-}
-
-#Preview {
-    InventoryView()
 }

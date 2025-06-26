@@ -1,214 +1,158 @@
 import SwiftUI
 
+// MARK: - Dashboard View
 struct DashboardView: View {
-    @State private var showFilter = false
-    @State private var showStored = false
-    @State private var showBorrowed = false
+    @ObservedObject var viewModel: InventoryViewModel
+    @Binding var selectedTab: Int
+    @Environment(\.colorScheme) var colorScheme
+    @State private var activitySearch = ""
+    
+    private let allActivities: [ActivityItem] = [
+        ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:30 AM", tagID: "1234567890"),
+        ActivityItem(type: .picked, title: "Mochila emprestada", time: "10:25 AM", tagID: "9876543210"),
+        ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:20 AM", tagID: "4567890123"),
+        ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:15 AM", tagID: "7890123456")
+    ]
 
+    private var storedCount: String { "\(viewModel.bags.filter { $0.state == .guardada }.count)" }
+    private var inUseCount: String { "\(viewModel.bags.filter { $0.state == .emUso || $0.state == .emprestada }.count)" }
+    private var lostCount: String { "\(viewModel.bags.filter { $0.state == .perdida }.count)" }
+    private var interdictedCount: String { "\(viewModel.bags.filter { $0.state == .interditada }.count)" }
+    
+    private var filteredActivities: [ActivityItem] {
+        if activitySearch.isEmpty { return allActivities }
+        return allActivities.filter {
+            $0.title.localizedCaseInsensitiveContains(activitySearch) ||
+            $0.time.localizedCaseInsensitiveContains(activitySearch) ||
+            $0.tagID.localizedCaseInsensitiveContains(activitySearch)
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
-            // Top Bar
             HStack {
                 Spacer()
-                Text("Dashboard")
-                    .font(.title)
-                    .bold()
-                    .padding(.leading, 24)
+                if colorScheme == .dark {
+                    Image("logodark").resizable().scaledToFit().frame(height: 80)
+                } else {
+                    Image("logonormal").resizable().scaledToFit().frame(height: 80)
+                }
                 Spacer()
-//                Button(action: {
-//                    showFilter = true
-//                }) {
-//                    Image(systemName: "line.3.horizontal.decrease.circle")
-//                        .foregroundColor(.black)
-//                        .frame(width: 24, height: 24)
-//                }
-//                .frame(width: 48, height: 48)
             }
-            .padding(.horizontal)
-            .padding(.top, 10)
-            .background(Color(.systemGray6))
+            .padding(.horizontal).padding(.top, 10)
             
-            // Cards
-            HStack(spacing: 16) {
-                Button(action: {
-                    showStored = true
-                }) {
-                    StatCard(title: "Mochilas guardadas", value: "20")
+            VStack(spacing: 16) {
+                HStack(spacing: 16) {
+                    Button(action: { viewModel.selectedStateFilter = .guardada; selectedTab = 1 }) {
+                        StatCard(title: "Mochilas guardadas", value: storedCount)
+                    }.buttonStyle(.plain)
+                    Button(action: { viewModel.selectedStateFilter = .emUso; selectedTab = 1 }) {
+                        StatCard(title: "Mochilas em Uso", value: inUseCount)
+                    }.buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-                
-                Button(action: {
-                    showBorrowed = true
-                }) {
-                    StatCard(title: "Mochilas emprestadas", value: "5")
+                HStack(spacing: 16) {
+                    Button(action: { viewModel.selectedStateFilter = .perdida; selectedTab = 1 }) {
+                        StatCard(title: "Mochilas Perdidas", value: lostCount)
+                    }.buttonStyle(.plain)
+                    Button(action: { viewModel.selectedStateFilter = .interditada; selectedTab = 1 }) {
+                        StatCard(title: "Mochilas Interditadas", value: interdictedCount)
+                    }.buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-            }
-            .padding()
+            }.padding()
             
-            // Recent Activity
             Text("Atividade recente")
-                .font(.title3)
-                .bold()
-                .padding(.horizontal)
-                .padding(.vertical, 4)
-                .padding(.bottom, 5)
+                .font(.title3).bold().frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal).padding(.vertical, 4).padding(.bottom, 5)
             
-            ScrollView {
-                VStack(spacing: 12) {
-                    ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:30 AM", tagID: "1234567890")
-                    ActivityItem(type: .picked, title: "Mochila emprestada", time: "10:25 AM", tagID: "9876543210")
-                    ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:20 AM", tagID: "4567890123")
-                    ActivityItem(type: .returned, title: "Mochila devolvida", time: "10:15 AM", tagID: "7890123456")
-                }
-                .padding(.horizontal)
-                .padding(.bottom)
+            HStack {
+                Image(systemName: "magnifyingglass").foregroundColor(.gray).padding(.leading, 12)
+                TextField("Buscar atividade...", text: $activitySearch).padding(.vertical, 10)
             }
+            .background(Color(UIColor.systemGray4)).cornerRadius(12)
+            .padding(.horizontal).padding(.bottom, 10)
             
-            // Bottom Navigation
-            Divider()
-        }
-        .background(Color(.systemGray6).ignoresSafeArea())
-        .sheet(isPresented: $showStored) {
-            BackpackListView(title: "Mochilas guardadas", backpacks: mockStored)
-        }
-        .sheet(isPresented: $showBorrowed) {
-            BackpackListView(title: "Mochilas emprestadas", backpacks: mockBorrowed)
-        }
-    }
-}
-
-struct BackpackListView: View {
-    let title: String
-    let backpacks: [Backpack]
-
-    var body: some View {
-        NavigationView {
-            List(backpacks) { bag in
-                HStack {
-                    Image(systemName: "backpack.fill")
-                        .foregroundColor(.black)
-                        .frame(width: 32, height: 32)
-                    VStack(alignment: .leading) {
-                        Text(bag.name)
-                            .fontWeight(.medium)
-                        Text("Tag ID: \(bag.tagID)")
-                            .font(.caption)
-                            .foregroundColor(.gray)
+            ZStack {
+                if viewModel.isLoading { ProgressView() }
+                else if let errorMessage = viewModel.errorMessage {
+                    VStack(spacing: 10) {
+                        Text(errorMessage).foregroundColor(.red).multilineTextAlignment(.center).padding(.horizontal)
+                        Button("Tentar Novamente") { Task { await viewModel.fetchBgs() } }
+                            .buttonStyle(.borderedProminent).tint(.red)
+                    }
+                } else {
+                    ScrollView {
+                        VStack(spacing: 12) {
+                            ForEach(filteredActivities) { $0 }
+                        }.padding(.horizontal).padding(.bottom)
                     }
                 }
-                .padding(.vertical, 4)
             }
-            .navigationTitle(title)
+            Spacer()
+            Divider()
         }
+        .background(Color("BackgroundColor").ignoresSafeArea())
     }
 }
-
-struct Backpack: Identifiable {
-    let id = UUID()
-    let name: String
-    let tagID: String
-}
-
-// Mock data
-func generateRandomTagID(length: Int) -> String {
-    let digits = "0123456789"
-    return String((0..<length).compactMap { _ in digits.randomElement() })
-}
-
-let mockStored: [Backpack] = (1...20).map { i in
-    Backpack(name: "Mochila \(i)", tagID: generateRandomTagID(length: 10))
-}
-
-let mockBorrowed: [Backpack] = (1...3).map { i in
-    Backpack(name: "Mochila \(i)", tagID: generateRandomTagID(length: 10))
-}
-
-
+// MARK: - Subviews do Dashboard
 struct StatCard: View {
     let title: String
     let value: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(.black)
-            Text(value)
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundColor(.black)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title).font(.subheadline).fontWeight(.medium).foregroundColor(Color(.black)).fixedSize(horizontal: false, vertical: true)
+            Text(value).font(.title).fontWeight(.bold).foregroundColor(Color(.black))
         }
-        .padding()
-        .frame(minWidth: 158)
-        .background(Color(UIColor.systemGray4))
-        .cornerRadius(12)
+        .padding().frame(maxWidth: .infinity, minHeight: 90, alignment: .topLeading)
+        .background(Color("ButtonColor")).cornerRadius(12)
     }
 }
 
 enum ActivityIconType {
-    case check
-    case xmark
-    case returned
-    case picked
-    
+    case check, xmark, returned, picked
     var systemName: String {
         switch self {
-        case .check: return "checkmark"
-        case .xmark: return "xmark"
-        case .returned: return "square.and.arrow.down.fill"
-        case .picked: return "square.and.arrow.up"
+        case .check: "checkmark"
+        case .xmark: "xmark"
+        case .returned: "square.and.arrow.down.fill"
+        case .picked: "square.and.arrow.up"
         }
     }
-
     var color: Color {
         switch self {
-        case .check: return .green
-        case .xmark: return .red
-        case .returned: return .black
-        case .picked: return .black
+        case .check: .green
+        case .xmark: .red
+        case .returned: .blue
+        case .picked: .orange
         }
     }
 }
 
-struct ActivityItem: View {
+struct ActivityItem: View, Identifiable {
+    let id = UUID()
     let type: ActivityIconType
     let title: String
     let time: String
     let tagID: String
-
     var body: some View {
         HStack(spacing: 12) {
             ZStack {
-                Circle()
-                    .fill(Color(UIColor.systemGray4))
-                    .frame(width: 48, height: 48)
-                Image(systemName: type.systemName)
-                    .foregroundColor(.black)
+                Circle().fill(type.color).opacity(0.3).frame(width: 48, height: 48)
+                Image(systemName: type.systemName).foregroundColor(Color("TextColor"))
             }
-
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .fontWeight(.medium)
-                    .foregroundColor(.black)
-                Text(time)
-                    .font(.caption)
-                    .foregroundColor(.gray)
-                Text("Tag ID: \(tagID)")
-                    .font(.caption)
-                    .foregroundColor(.gray)
+                Text(title).fontWeight(.medium).foregroundColor(Color("TextColor"))
+                Text(time).font(.caption).foregroundColor(.gray)
+                Text("Tag ID: \(tagID)").font(.caption).foregroundColor(.gray)
             }
-
             Spacer()
         }
-        .padding()
-        .background(Color.white)
+        .padding().background(Color("MenuBar"))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(type.color, lineWidth: 3))
         .cornerRadius(10)
     }
 }
 
-
 #Preview {
-    DashboardView()
+    MainTabView()
 }

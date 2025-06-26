@@ -22,6 +22,32 @@ enum APIError: Error, LocalizedError {
     }
 }
 
+class Endpoints {
+    let show: String = "/show"; // Lista uma bag
+    let create: String = "/create/bag"; // Cria uma bag
+    let delete: String = "/delete/bag"; // Deletar bag
+    let update: String = "/update/bag"; // Atualizar bag
+    let getAll: String = "/bags"; // Lista todas as bags
+    let getUIDS: String = "/bags/uids"; // lista todos os uids
+}
+
+class UserTemplate {
+    let username: String = "Teste";
+    let email: String = "teste@gmail.com";
+    let password: String = "teste123";
+}
+
+
+enum RequestType: String, Decodable, Identifiable, CaseIterable {
+    case put = "PUT"
+    case post = "POST"
+    case delete = "DELETE"
+    
+    var id: String {
+        return self.rawValue
+    }
+}
+
 
 class APIService {
     static let shared = APIService()
@@ -46,7 +72,6 @@ class APIService {
     
     // MARK: - Generic GET Request
     
-    /// Realiza uma requisição GET genérica e decodifica a resposta.
     func getRequest<T: Decodable>(type: T.Type, endpoint: String, queryItems: [URLQueryItem]? = nil) async throws -> T {
         guard let url = makeURL(endpoint: endpoint, queryItems: queryItems) else {
             throw APIError.invalidURL
@@ -69,54 +94,15 @@ class APIService {
             throw APIError.decodingError(error)
         }
     }
-    
-    // MARK: - Generic POST Request
-    
-    /// Realiza uma requisição POST genérica com um corpo (body) e decodifica a resposta.
-    func postRequest<T: Encodable, R: Decodable>(body: T, responseType: R.Type, endpoint: String) async throws -> R {
+
+    // MARK: - Generic POST, PUT, DELETE Requests
+    func sendDataRequest<T: Encodable, R: Decodable>(body: T, responseType: R.Type, endpoint: String, method: RequestType) async throws -> R {
         guard let url = makeURL(endpoint: endpoint) else {
             throw APIError.invalidURL
         }
         
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        request.httpBody = try JSONEncoder().encode(body)
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw APIError.invalidResponse
-        }
-        
-        guard (200...299).contains(httpResponse.statusCode) else {
-            throw APIError.requestFailed(statusCode: httpResponse.statusCode)
-        }
-        
-        do {
-            return try JSONDecoder().decode(R.self, from: data)
-        } catch {
-            throw APIError.decodingError(error)
-        }
-    }
-    
-    // MARK: - Generic PUT Request
-    
-    /// Realiza uma requisição PUT genérica com um corpo (body) para atualização.
-    /// - Parameters:
-    ///   - body: O objeto `Encodable` a ser enviado no corpo da requisição.
-    ///   - responseType: O tipo `Decodable` que esperamos como resposta.
-    ///   - endpoint: O caminho do recurso na API.
-    /// - Returns: Um objeto do tipo da resposta especificada.
-    /// - Throws: Um `APIError` se a requisição falhar.
-    func putRequest<T: Encodable, R: Decodable>(body: T, responseType: R.Type, endpoint: String) async throws -> R {
-        guard let url = makeURL(endpoint: endpoint) else {
-            throw APIError.invalidURL
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT" // A principal diferença está aqui
+        request.httpMethod = method.rawValue // Usa o método especificado
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         
         request.httpBody = try JSONEncoder().encode(body)
@@ -138,47 +124,3 @@ class APIService {
         }
     }
 }
-
-
-// MARK: - Como Usar as Novas Funções
-
-/*
- 
- // ** Exemplo de chamada GET **
- func fetchAllBags() async {
-     do {
-         let bags: [BagModel] = try await APIService.shared.getRequest(type: [BagModel].self, endpoint: "bags")
-         print("Mochilas recebidas: \(bags.count)")
-     } catch {
-         print("Erro ao buscar mochilas: \(error.localizedDescription)")
-     }
- }
- 
-
- // ** Exemplo de chamada POST **
- func registerUser(newUser: UserModel) async {
-     struct AuthResponse: Decodable { let message: String, userId: String }
-     do {
-         let response: AuthResponse = try await APIService.shared.postRequest(body: newUser, responseType: AuthResponse.self, endpoint: "users/register")
-         print("Usuário registrado com sucesso: \(response.message)")
-     } catch {
-         print("Erro ao registrar usuário: \(error.localizedDescription)")
-     }
- }
- 
- 
- // ** Exemplo de chamada PUT **
- func updateUserProfile(updatedProfile: UserProfile) async {
-    struct UpdateResponse: Decodable { let success: Bool }
-    do {
-        // Envia o perfil atualizado para o endpoint de update
-        let response: UpdateResponse = try await APIService.shared.putRequest(body: updatedProfile, responseType: UpdateResponse.self, endpoint: "profile/update")
-        if response.success {
-            print("Perfil atualizado com sucesso!")
-        }
-    } catch {
-        print("Erro ao atualizar perfil: \(error.localizedDescription)")
-    }
- }
-
-*/

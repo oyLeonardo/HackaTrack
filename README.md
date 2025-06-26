@@ -1,35 +1,96 @@
+<div align="center">
+
+<img src="https://i.imgur.com/7tjl4gr.png" width="30%" alt="Project Logo"/>
+
+# HACKATRACK
+
+🎒 **Gestão Inteligente de Equipamentos - Projeto HackaTruck**
+
 ![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
 ![Arduino](https://img.shields.io/badge/-Arduino-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
 ![Node-RED](https://img.shields.io/badge/Node--RED-%238F0000.svg?style=for-the-badge&logo=node-red&logoColor=white)
 <img src="https://imgur.com/jioPKfX.png" alt="UNB Logo" height="28"/>
 
-🎒 Projeto de Gestão de Equipamentos HackaTruck
+</div>
 
-🚀 Sobre o Projeto
-Este projeto nasceu da nossa experiência e observação no programa HackaTruck, onde identificamos uma necessidade crucial: a gestão eficiente dos equipamentos fornecidos, em especial as mochilas contendo MacBooks que eram fornecidas para os alunos no momento da aula. A ausência de um sistema robusto para controle gerava desafios como dificuldade em localizar itens, possíveis extravios e processos manuais demorados e propensos a erros. 
+---
 
-Nossa solução foi feita em um aplicativo, concebida para otimizar e simplificar a administração desses ativos. Ela visa proporcionar rastreabilidade completa, organização aprimorada e responsabilização clara, transformando a maneira como os equipamentos são gerenciados dentro do projeto. O objetivo é garantir que cada item esteja onde precisa estar, com agilidade e precisão.
+## 🚀 Sobre o Projeto
 
-✨ Tecnologias Utilizadas
-O desenvolvimento desta solução abrangeu diversas tecnologias, combinando o poder do desenvolvimento de aplicações móveis com a flexibilidade da Internet das Coisas (IoT):
-SwiftUI: Utilizado para a criação da interface do usuário do aplicativo, garantindo uma experiência intuitiva e fluida em dispositivos iOS.
-Node-RED: Uma ferramenta para programação baseada em fluxo, essencial para a integração e processamento de dados dos dispositivos IoT.
-IoT (Internet das Coisas): A base da nossa solução para permitir a comunicação e interação entre os objetos físicos e o sistema digital.
+O HackaTrack surgiu a partir da vivência no programa **HackaTruck**, onde identificamos uma necessidade crítica: **a gestão eficiente dos equipamentos fornecidos aos alunos**, especialmente mochilas contendo **MacBooks**.
 
-🔌 Componentes IoT
-Para o coração da nossa solução de rastreamento, utilizamos os seguintes componentes de hardware:
-- Arduino: A plataforma de prototipagem eletrônica foi fundamental para a conexão e controle dos módulos de identificação.
-- Módulo RFID (Radio-Frequency Identification): Responsável pela leitura das tags de identificação.
-- Tags de Reconhecimento (RFID Tags): Acopladas às mochilas e MacBooks, permitindo sua identificação única e rastreamento.
+A ausência de um sistema robusto gerava:
+- Dificuldade em monitorar/gerenciar os itens
+- Risco de extravios
+- Processos manuais demorados e propensos a erros
 
-🤝 Como Contribuir
-Interessado em contribuir? Siga os passos abaixo:
+Nossa solução é um **aplicativo móvel inteligente**, desenvolvido para **otimizar a administração dos ativos do projeto**, proporcionando:
+- Rastreabilidade completa
+- Organização aprimorada
+- Responsabilização clara
 
-- Faça um Fork do projeto.
-- Crie uma Branch para sua feature `git checkout -b feature/AmazingFeature`.
-- Faça o Commit das suas mudanças `git commit -m 'Add some AmazingFeature'`.
-- Faça o Push para a Branch `git push origin feature/AmazingFeature`.
-- Abra um PR (Pull Request).
+O objetivo é garantir que **cada item esteja onde precisa estar**, com agilidade e precisão.
 
-📄 Licença
-Distribuído sob a Licença MIT. Veja `LICENSE` para mais informações.
+---
+
+## ✨ Tecnologias Utilizadas
+
+A solução foi construída combinando tecnologias de desenvolvimento mobile, cloud e Internet das Coisas (IoT):
+
+- **SwiftUI**: Para uma interface de usuário fluida, moderna e intuitiva em dispositivos iOS.
+- **Node-RED**: Utilizado como ferramenta de integração e processamento de dados com fluxo visual.
+- **IoT**: Fundamenta a comunicação entre os objetos físicos (equipamentos) e o sistema digital.
+
+---
+
+## 🔌 Componentes IoT
+
+Para possibilitar o monitoramento/gerenciamento em tempo real e identificação única dos itens, utilizamos:
+
+- **Arduino**: Plataforma base para controle dos sensores e leitura dos dados.
+- **Módulo RFID**: Responsável pela leitura das **tags de identificação** dos itens.
+- **RFID Tags**: Acopladas às mochilas e aos MacBooks, permitindo rastreamento único e seguro.
+
+---
+
+## 📦 Principais Funcionalidades
+
+| Funcionalidade                         | Descrição                                                                 |
+|----------------------------------------|---------------------------------------------------------------------------|
+| 🎒 **Rastreamento de Equipamentos**   | Identificação e localização em tempo real de mochilas e MacBooks via RFID |
+| 📲 **Aplicativo iOS**                 | Interface amigável para gerenciamento dos itens no ambiente mobile        |
+| 📊 **Painel de Estatísticas**         | Exibição de dados como uso recente, status dos itens e alertas            |
+| 🧭 **Histórico de Atividades**       | Registros de movimentações e alterações feitas nos equipamentos           |
+| 🔔 **Sistema de Alertas**            | Notificações sobre itens fora do local, atrasos ou possíveis extravios    |
+| ⚙️ **Configurações Personalizáveis** | Ajustes no modo escuro, preferências do usuário e logs do sistema         |
+| 🔗 **Integração IoT**                | Comunicação entre o app, Node-RED e os sensores via Arduino               |
+| 🧪 **Ambiente de Testes**            | Testes locais com mock de leitura RFID e simulações de inventário         |
+
+---
+
+## 🤝 Como Contribuir
+
+Quer contribuir com o projeto? Siga os passos abaixo:
+
+1. **Fork** este repositório
+2. Crie sua branch:  
+```bash
+git checkout -b feature/SuaFeature
+```
+3. Faça o commit das suas alterações.
+```bash
+git commit -m 'Adiciona nova funcionalidade'
+```
+4. Faça o push para sua branch:
+```
+git push origin feature/SuaFeature
+```
+5. Abra um **PR** (Pull Request)
+
+
+## 📄 Licença
+Distribuído sob a Licença MIT. Veja o arquivo `LICENSE.md` para mais detalhes.
+
+<div align="center">
+🛠️ Feito com dedicação por estudantes da <strong>UnB</strong> no programa <strong>HackaTruck</strong>
+</div>

@@ -1,6 +1,7 @@
 ![Swift](https://img.shields.io/badge/swift-F54A2A?style=for-the-badge&logo=swift&logoColor=white)
 ![Arduino](https://img.shields.io/badge/-Arduino-00979D?style=for-the-badge&logo=Arduino&logoColor=white)
 ![Node-RED](https://img.shields.io/badge/Node--RED-%238F0000.svg?style=for-the-badge&logo=node-red&logoColor=white)
+<img src="https://imgur.com/jioPKfX.png" alt="UNB Logo" height="28"/>
 
 🎒 Projeto de Gestão de Equipamentos HackaTruck
 
